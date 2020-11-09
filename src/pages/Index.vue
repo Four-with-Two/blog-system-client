@@ -2,9 +2,9 @@
   <div style="width: 100%; height: 100%">
     <!-- 页面容器 -->
     <el-container id="bigContainer">
-      <el-header>纯享版博客园</el-header>
+      <el-header id="header"><div>纯享版博客园</div></el-header>
       <el-container id="underContent">
-        <el-aside style="width: 200px; height: 100%; background-color: #545c64">
+        <el-aside style="width: 200px; height: 100%; background-color: #333951">
           <side-menu></side-menu>
         </el-aside>
         <el-container>
@@ -30,6 +30,7 @@ export default {
 </script>
 
 <style scoped>
+/* 取消内外边距 */
 * {
   margin: 0;
   padding: 0;
@@ -44,7 +45,16 @@ export default {
   display: flex;
   flex-direction: column;
 }
+#header {
+  background-color: #212844;
+  color: #fffffe;
+  text-align: center;
+  align-items: center;
+}
 #underContent {
   flex-grow: 1;
+}
+aside ui {
+  width: 100%;
 }
 </style>

@@ -5,18 +5,18 @@
       class="el-menu-vertical-demo"
       @open="handleOpen"
       @close="handleClose"
-      background-color="#545c64"
+      background-color="#333951"
       text-color="#fff"
-      active-text-color="#ffd04b"
+      active-text-color="#b9c8d5"
     >
       <el-menu-item index="2">
-        ​ <i class="el-icon-menu"></i> ​ <span slot="title">导航二</span>
+        ​ <i class="el-icon-menu"></i> ​ <span slot="title">博客广场</span>
       </el-menu-item>
       <el-menu-item index="2">
-        ​ <i class="el-icon-menu"></i> ​ <span slot="title">导航二</span>
+        ​ <i class="el-icon-menu"></i> ​ <span slot="title">博客管理</span>
       </el-menu-item>
       <el-menu-item index="2">
-        ​ <i class="el-icon-menu"></i> ​ <span slot="title">导航二</span>
+        ​ <i class="el-icon-menu"></i> ​ <span slot="title">我的资料</span>
       </el-menu-item>
     </el-menu>
   </div>
