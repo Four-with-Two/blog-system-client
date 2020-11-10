@@ -3,9 +3,9 @@ import Router from 'vue-router'
 import Index from '@/pages/Index'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
-import BlogGround from '@/components/BlogGround'
-import BlogManage from '@/components/BlogManage'
-import MyInfo from '@/components/MyInfo'
+import BlogGround from '@/components/blogGround/BlogGround'
+import BlogManage from '@/components/blogManage/BlogManage'
+import MyInfo from '@/components/myInfo/MyInfo'
 
 Vue.use(Router)
 
