@@ -16,5 +16,8 @@ npm run dev
 # 关于git规范：
 在使用git commit的时候，使用规范的git会利于后面代码的维护以及项目跟进，关于commit规范：https://juejin.im/post/6844904036068491278#heading-3
 
+#项目使用的是element-ui库，关于这个库的使用：
+https://element.eleme.cn/#/zh-CN/component/installation
+
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 ```
