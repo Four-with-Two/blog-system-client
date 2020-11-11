@@ -4,24 +4,33 @@
     <div class="login-box">
 
       <!-- 登录表单区域 -->
-      <el-form label-width="0px" class="login-form">
+      <el-form class="login-form" ref="loginForm" :model="loginForm" label-width="0px" >
         <p class="login-head">纯享版博客园登录</p>
         <!-- 邮箱/用户名 -->
-        <el-form-item>
-          <el-input v-model="inputUserName" placeholder="请输入邮箱/用户名"></el-input>
+        <el-form-item >
+          <el-input v-model="loginForm.username" placeholder="请输入邮箱/用户名" @keyup.enter.native="submitForm('loginForm')"></el-input>
         </el-form-item>
         <!-- 密码 -->
-        <el-form-item>
-          <el-input v-model="inputPassword" type="password" placeholder="请输入密码"></el-input>
+        <el-form-item >
+          <el-input v-model="loginForm.password" type="password" placeholder="请输入密码"></el-input>
         </el-form-item>
         <!-- 验证码 -->
-        <el-form-item>
-          <el-input v-model="inputExam" placeholder="请输入验证码"></el-input>
-          <!-- <img src="" alt="验证码"> -->
+        <el-form-item >
+          <el-row :span="24">
+              <el-col :span="12">
+                  <el-input v-model="loginForm.code" placeholder="请输入验证码" @keyup.enter.native="submitForm('loginForm')"></el-input>
+              </el-col>
+              <el-col :span="12">
+                  <div class="login-code" @click="refreshCode">
+                      <!--验证码组件-->
+                      <s-identify :identifyCode="identifyCode"></s-identify>
+                  </div>
+              </el-col>
+          </el-row>
         </el-form-item>        
         <!-- 按钮 -->
         <el-form-item  class="btns">
-          <el-button type="primary">登录</el-button>
+          <el-button type="primary" @click="submitForm('loginForm')">登录</el-button>
           <el-button type="primary">注册</el-button>
         </el-form-item>        
       </el-form>
@@ -34,13 +43,44 @@
 
 <script>
   export default {
+    name:'userLogin',
+
     data(){
       return{
-        inputUserName:'',
-        inputPassword:'',
-        inputExam:'',
-        code:''
+        isDebugLogin: false,
+        loginForm:{
+          username:'',
+          password:'',
+          code:''
+        },
+        identifyCodes: '1234567890',
+        identifyCode: ''
+
       }
+    },
+
+    watch: {
+        identifyCode(v) {
+            this.isDebugLogin && (this.loginForm.code = v)
+        }
+    },
+
+    methods: {
+        refreshCode() {
+            this.identifyCode = ''
+            this.makeCode(this.identifyCodes, 4)
+        },
+        submitForm(formName) {
+            this.$refs[formName].validate(
+              valid => {
+                if (valid) {
+                    console.log('授权成功')
+                } else {
+                    return false
+                }
+            }
+            )
+        }      
     }
   }
 </script>
