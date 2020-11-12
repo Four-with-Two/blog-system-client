@@ -42,45 +42,61 @@
 </template>
 
 <script>
+  import SIdentify from '../components/sidentify'
   export default {
     name:'userLogin',
+    components: {SIdentify},
+    data() {
 
-    data(){
-      return{
-        isDebugLogin: false,
-        loginForm:{
-          username:'',
-          password:'',
-          code:''
-        },
-        identifyCodes: '1234567890',
-        identifyCode: ''
-
-      }
+        return {
+            isDebugLogin: false,
+            loginForm: {
+                username: '',
+                password: '',
+                code: ''
+            },
+            identifyCodes: '1234567890',
+            identifyCode: ''
+        }
     },
-
     watch: {
+        isDebugLogin(v) {
+            if (v) {
+                this.loginForm.password = '123'
+                this.refreshCode()
+            }
+        },
         identifyCode(v) {
             this.isDebugLogin && (this.loginForm.code = v)
         }
     },
-
     methods: {
+        randomNum(min, max) {
+            return Math.floor(Math.random() * (max - min) + min)
+        },
         refreshCode() {
             this.identifyCode = ''
             this.makeCode(this.identifyCodes, 4)
         },
+        makeCode(o, l) {
+            for (let i = 0; i < l; i++) {
+                this.identifyCode += this.identifyCodes[
+                    this.randomNum(0, this.identifyCodes.length)
+                ]
+            }
+        },
         submitForm(formName) {
-            this.$refs[formName].validate(
-              valid => {
+            this.$refs[formName].validate(valid => {
                 if (valid) {
                     console.log('授权成功')
                 } else {
                     return false
                 }
-            }
-            )
-        }      
+            })
+        }
+    },
+    created() {
+        this.refreshCode()
     }
   }
 </script>
@@ -118,5 +134,10 @@
       display: flex;
       justify-content: center;
       margin: 15px;
-    }  
+    }
+    .login-code{
+      display: flex;
+      justify-content: center;
+      margin: 0px;      
+    }
 </style>
