@@ -10,7 +10,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -18,64 +17,61 @@ export default {};
 </script>
 
 <style scoped>
-.register{
-       height:100%;
-       width: 100%;
-       background-color: #9966FF;
-       float:left;
+.register {
+  height: 100%;
+  width: 100%;
+  background-color: #9966ff;
+  float: left;
 }
-.box{
-   background-color: azure;
-   width: 30%;
-   height: 40%;
-   top: 25%;
-   margin: auto;
-   position: relative;
-   border: 1px solid;
-   border-radius: 10px;
+.box {
+  background-color: azure;
+  width: 30%;
+  height: 40%;
+  top: 25%;
+  margin: auto;
+  position: relative;
+  border: 1px solid;
+  border-radius: 10px;
 }
-#header{
+#header {
   text-align: center;
-  margin-top: 10px ;
+  margin-top: 10px;
 }
-.user_name{
-    width: 50%;
-    height: 50vh;
-    margin: auto;
-    position: relative;
-    font-family: Sans-serif;
+.user_name {
+  height: 50vh;
+  margin: auto;
+  position: relative;
+  font-family: Sans-serif;
+  width: 50%;
 }
-.user_name input{
+.user_name input {
   height: 2rem;
   width: 10rem;
   border: none;
   border-bottom: 0.1rem solid black;
-  padding-top:1rem ;
+  padding-top: 1rem;
   outline: none;
-
 }
-.user_name label{
+.user_name label {
   position: absolute;
   top: 0;
   left: 0;
   pointer-events: none;
 }
-.user_name label span{
-   position: absolute;
+.user_name label span {
+  position: absolute;
   bottom: -3rem;
   left: 0;
-  transition: all 0.3s ease; 
+  transition: all 0.3s ease;
 }
-.user_name ::after{
-  content:"";
+.user_name ::after {
+  content: "";
   height: 3rem;
   width: 10rem;
   top: 0;
   left: 0;
   border-bottom: 0.2rem solid #1cb9b6;
   transform: translateX(-100%);
-  transition:all 0.3s ease;
+  transition: all 0.3s ease;
 }
-
-    
 </style>
