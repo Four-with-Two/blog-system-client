@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "element-ui": "^2.14.0",
+    "jquery": "^3.5.1",
     "less": "^3.12.2",
     "less-loader": "^7.0.2",
     "vue": "^2.5.2",
@@ -67,5 +68,16 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "main": ".postcssrc.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmmaZoeLeft/blog-system-client.git"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EmmaZoeLeft/blog-system-client/issues"
+  },
+  "homepage": "https://github.com/EmmaZoeLeft/blog-system-client#readme"
 }
