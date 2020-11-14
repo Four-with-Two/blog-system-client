@@ -9,8 +9,16 @@
         <el-aside id="aside" style="width: 200px">
           <side-menu @checkComponent="checkComponent"></side-menu>
         </el-aside>
-        <el-container>
-          <el-main>
+        <el-container style="display: flex; flex-direction: column">
+          <el-main
+            style="
+              width: 100%;
+              height: 100%;
+              flex-grow: 1;
+              display: flex;
+              flex-direction: column;
+            "
+          >
             <el-breadcrumb
               separator-class="el-icon-arrow-right"
               style="margin-top: 15px; margin-left: 15px"
@@ -25,11 +33,17 @@
               >
             </el-breadcrumb>
             <router-view
-              style="margin-top: 15px; margin-left: 15px"
-              allBlog="allBlog"
+              style="
+                margin: 15px;
+                flex-grow: 1;
+                height: 200px;
+                overflow-y: scroll;
+              "
+              :allBlog="allBlog"
             ></router-view>
           </el-main>
-          <el-footer style="background-color: #212844; color: #fffffe"
+          <el-footer
+            style="background-color: #212844; color: #fffffe; height: 30px"
             >参与成员：四带二队</el-footer
           >
         </el-container>
@@ -49,6 +63,7 @@ export default {
       current: [],
       breadcrumbArr: [{ path: "blogGround", name: "博客广场" }],
       replace: true,
+      allBlog: [],
     };
   },
   created() {
@@ -71,6 +86,7 @@ export default {
         methods: "get",
       }).then((res) => {
         this.allBlog = res.data.blogsDTOList;
+        console.log(res);
       });
     },
     //切换side组件的时候对面包屑进行置空
