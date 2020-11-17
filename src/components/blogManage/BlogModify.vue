@@ -1,10 +1,10 @@
 <template>
-  <div>用户信息</div>
+  <div>博客修改页面</div>
 </template>
 
 <script>
 export default {};
 </script>
 
-<style  scoped>
+<style scoped>
 </style>

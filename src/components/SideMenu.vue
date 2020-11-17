@@ -10,14 +10,21 @@
       active-text-color="#b9c8d5"
       router="true"
     >
-      <el-menu-item index="/index/blogGround">
+      <el-menu-item index="/index/blogGround" @click="check">
         <i class="el-icon-menu"></i><span slot="title">博客广场</span>
       </el-menu-item>
-      <el-menu-item index="/index/blogGround" route="/index/blogManage">
-        <i class="el-icon-menu"></i> ​<span slot="title">博客管理</span>
+      <el-menu-item
+        index="/index/blogManage"
+        route="/index/blogManage"
+        @click="check"
+      >
+        <i class="el-icon-menu"></i> ​<span slot="title" @click="check"
+          >博客管理</span
+        >
       </el-menu-item>
-      <el-menu-item index="/index/blogGround" route="/index/myInfo">
-        <i class="el-icon-menu"></i> ​ <span slot="title">我的资料</span>
+      <el-menu-item index="/index/myInfo" route="/index/myInfo" @click="check">
+        <i class="el-icon-menu"></i> ​
+        <span slot="title" @click="check">我的资料</span>
       </el-menu-item>
     </el-menu>
   </div>
@@ -30,8 +37,9 @@ export default {
   },
   methods: {
     //实现实现页面的跳转
-    checkPage() {
-      console.log(23);
+    check(msg) {
+      console.log();
+      this.$emit("checkComponent");
     },
     handleOpen(key, keyPath) {
       console.log(key, keyPath);

@@ -1,8 +1,6 @@
 <template>
-<div class="login-container">
-    
+  <div class="login-container">
     <div class="login-box">
-
       <!-- 登录表单区域 -->
       <el-form class="login-form" :model="loginForm" :rules="loginRules" ref="loginForm" label-width="0px" >
         <p class="login-head">纯享版博客园登录</p>
@@ -17,24 +15,27 @@
         <!-- 验证码 -->
         <el-form-item prop="code">
           <el-row :span="24">
-              <el-col :span="12">
-                  <el-input v-model="loginForm.code" placeholder="请输入验证码" @keyup.enter.native="submitForm('loginForm')"></el-input>
-              </el-col>
-              <el-col :span="12">
-                  <div class="login-code" @click="refreshCode">
-                      <!--验证码组件-->
-                      <s-identify :identifyCode="identifyCode"></s-identify>
-                  </div>
-              </el-col>
+            <el-col :span="12">
+              <el-input
+                v-model="loginForm.code"
+                placeholder="请输入验证码"
+                @keyup.enter.native="submitForm('loginForm')"
+              ></el-input>
+            </el-col>
+            <el-col :span="12">
+              <div class="login-code" @click="refreshCode">
+                <!--验证码组件-->
+                <s-identify :identifyCode="identifyCode"></s-identify>
+              </div>
+            </el-col>
           </el-row>
-        </el-form-item>        
+        </el-form-item>
         <!-- 按钮 -->
         <el-form-item  class="btns">
           <el-button type="primary" @click="submitForm('loginForm')">登录</el-button>
           <el-button type="primary" @click="register()">注册</el-button>
         </el-form-item>        
       </el-form>
-      
     </div>
 
     <div class="aler-box" >
@@ -95,16 +96,8 @@
             }
           }
     },
-    watch: {
-        isDebugLogin(v) {
-            if (v) {
-                this.loginForm.password = '123'
-                this.refreshCode()
-            }
-        },
-        identifyCode(v) {
-            this.isDebugLogin && (this.loginForm.code = v)
-        }
+    identifyCode(v) {
+      this.isDebugLogin && (this.loginForm.code = v);
     },
     methods: {
         randomNum(min, max) {
@@ -150,10 +143,10 @@
           })
         }        
     },
-    created() {
-        this.refreshCode()
-    }
-  }
+  created() {
+    this.refreshCode();
+  },
+};
 </script>
 
 <style scoped >
