@@ -12,27 +12,73 @@
       </div>
     </div>
     <div class="box">
+      <form  class="register_form">
       <h1 id="title">纯享博客注册页面</h1>
       <div class="user_name">
-        <input type="text" required placeholder="请输入中文用户名" />
+        <input type="text"   placeholder="请输入中文用户名" name="username" id="username" v-model="register_form.username"/>
       </div>
       <div class="email">
         <div class="ema_in">
-          <input type="text" required placeholder="请输入邮箱地址" />
+          <input type="text"  placeholder="请输入邮箱地址" name="email" id="email" v-model="register_form.mail"/>
         </div>
       </div>
       <div class="password">
-        <input type="text" required placeholder="请输入密码" />
+        <input type="password"  placeholder="请输入密码" name="password" id="password" v-model="register_form.password"/>
       </div>
       <div class="btn">
-        <a href="">立刻注册</a>
+        <el-button type="primary" @click="register">注册</el-button>
       </div>
+      </form>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+export default {
+  data(){
+    return{
+      register_form: {
+        username: "123",
+        mail:"456",
+        password: "23",
+      },
+    }
+  },
+  methods:{
+    register(){
+      let data = {
+        user_name:this.register_form.username,
+        mail:this.register_form.mail,
+        password:this.register_form.password
+      }
+      console.log(data)
+      axios({
+        url:"http://gdut-hqcc.cn:8887/user/register",
+        method:"post",
+        data:data
+      }).then((res)=>{
+        this.registerform=res.data.registerform;
+        console.log(res);
+        alert(res.code);
+      })
+      
+
+    },
+ 
+   websocketsend(agentData){//数据发送
+        this.url="http://gdut-hqcc.cn:8887/user/register";
+        this.websock.send(agentData);
+   },
+  },
+  watch:{
+    // register_form:function{
+
+    // }
+  }
+
+};
+
 </script>
 
 <style scoped>
