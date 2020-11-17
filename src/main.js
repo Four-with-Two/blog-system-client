@@ -6,8 +6,17 @@ import router from './router'
 import './plugins/element'
 
 import './css/global.css'
-
 Vue.config.productionTip = false
+
+//axios接口引用
+import Axios from "axios"
+Vue.prototype.$axios=Axios
+//qs引用
+import qs from "qs"	
+Vue.prototype.$qs=qs
+//vueresourse引用
+import VueResourse from 'vue-resource'
+Vue.use(VueResourse)
 
 /* eslint-disable no-new */
 new Vue({
