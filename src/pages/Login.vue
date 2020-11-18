@@ -2,18 +2,31 @@
   <div class="login-container">
     <div class="login-box">
       <!-- 登录表单区域 -->
-      <el-form class="login-form" :model="loginForm" :rules="loginRules" ref="loginForm" label-width="0px" >
+      <el-form
+        class="login-form"
+        ref="loginForm"
+        :model="loginForm"
+        label-width="0px"
+      >
         <p class="login-head">纯享版博客园登录</p>
         <!-- 邮箱/用户名 -->
-        <el-form-item prop="username">
-          <el-input v-model="loginForm.username" placeholder="请输入邮箱/用户名" @keyup.enter.native="submitForm('loginForm')"></el-input>
+        <el-form-item>
+          <el-input
+            v-model="loginForm.username"
+            placeholder="请输入邮箱/用户名"
+            @keyup.enter.native="submitForm('loginForm')"
+          ></el-input>
         </el-form-item>
         <!-- 密码 -->
-        <el-form-item prop="password">
-          <el-input v-model="loginForm.password" type="password" placeholder="请输入密码"></el-input>
+        <el-form-item>
+          <el-input
+            v-model="loginForm.password"
+            type="password"
+            placeholder="请输入密码"
+          ></el-input>
         </el-form-item>
         <!-- 验证码 -->
-        <el-form-item prop="code">
+        <el-form-item>
           <el-row :span="24">
             <el-col :span="12">
               <el-input
@@ -31,156 +44,70 @@
           </el-row>
         </el-form-item>
         <!-- 按钮 -->
-        <el-form-item  class="btns">
-          <el-button type="primary" @click="submitForm('loginForm')">登录</el-button>
-          <el-button type="primary" @click="register()">注册</el-button>
-        </el-form-item>        
+        <el-form-item class="btns">
+          <el-button type="primary" @click="submitForm('loginForm')"
+            >登录</el-button
+          >
+          <el-button type="primary">注册</el-button>
+        </el-form-item>
       </el-form>
     </div>
-
-    <div class="aler-box" >
-      <!-- 账号密码匹配结果提示框 -->
-    </div>
-</div>
-
+  </div>
 </template>
 
 <script>
-  import SIdentify from '../components/sidentify'
-  import axios from "axios";
-  export default {
-    name:'userLogin',
-    components: {SIdentify},
-    data() {
-        // 用户名自定义验证规则?
-        const validateUsername = (rule, value, callback) => {
-          if (!value) {
-            callback(new Error('请输入正确的用户名'))
-          } else {
-            console.log('user', value)
-            callback()
-          }
-        }
-        // 验证码自定义验证规则
-        const validateVerifycode = (rule, value, callback) => {
-            if (this.identifyCode !== value) {
-                this.loginForm.code = ''
-                this.refreshCode()
-                callback(new Error('请输入正确的验证码'))
-            } else {
-                callback()
-            }
-        }
-
-        return {
-            isDebugLogin: false,
-            loginForm: {
-                username: '',
-                password: '',
-                code: ''
-            },
-            identifyCodes: '1234567890',
-            identifyCode: '',
-            loginRules: { // 绑定在form表单中的验证规则，此处对应的是prop，而非return的data
-              username: [
-                { required: true, message: '用户名/邮箱不能为空',trigger: 'blur' },
-                {validator:validateUsername,trigger:'blur'}
-              ],
-              password: [
-                { required: true, message: '密码不能为空', trigger: 'blur' },
-                { min: 6, message: '密码长度最少为6位', trigger: 'blur' }
-              ],
-              code: [
-                { required: true, trigger: 'blur'},
-                {validator: validateVerifycode,trigger: 'blur'}
-              ]
-            }
-          }
+import SIdentify from "../components/sidentify";
+export default {
+  name: "userLogin",
+  components: { SIdentify },
+  data() {
+    return {
+      isDebugLogin: false,
+      loginForm: {
+        username: "",
+        password: "",
+        code: "",
+      },
+      identifyCodes: "1234567890",
+      identifyCode: "",
+    };
+  },
+  watch: {
+    isDebugLogin(v) {
+      if (v) {
+        this.loginForm.password = "123";
+        this.refreshCode();
+      }
     },
-    watch: {
-        isDebugLogin(v) {
-            if (v) {
-                this.loginForm.password = '123'
-                this.refreshCode()
-            }
-        },
     identifyCode(v) {
       this.isDebugLogin && (this.loginForm.code = v);
-    }
-  },
-    methods: {
-        randomNum(min, max) {
-            return Math.floor(Math.random() * (max - min) + min)
-        },
-        refreshCode() {
-            this.identifyCode = ''
-            this.makeCode(this.identifyCodes, 4)
-        },
-        makeCode(o, l) {
-            for (let i = 0; i < l; i++) {
-                this.identifyCode += this.identifyCodes[
-                    this.randomNum(0, this.identifyCodes.length)
-                ]
-            }
-        },
-        // 点击登录按钮/按回车后
-        submitForm(formName) {
-            //  vue-resourse方法，弃之不用，转用axios
-            // this.$refs[formName].validate(async valid => {
-            //     if (!valid) return
-            //     //发起真正的提交验证请求 
-            //     const{data:res} =await this.$http.post('http://gdut-hqcc.cn:8887/user/login',
-            //     {
-            //       user_name:this.loginForm.username,
-            //       mail:this.loginForm.username,
-            //       password:this.loginForm.password
-            //     })
-            //     if(res.code !== true){
-            //       this.$message.error(res.message)
-            //     }
-            //     this.$message.success(res.message)
-            //     this.$router.push('/Index')
-            // })
-            let data={
-              user_name:this.loginForm.username,
-              mail:this.loginForm.username,
-              password:this.loginForm.password
-            }
-            console.log(data)
-            axios(
-              {
-                url:"http://gdut-hqcc.cn:8887/user/login",
-                method:"post",
-                data:data
-              }
-            ).then(
-              (res)=>{
-                console.log(res);
-                if(res.code !== true){
-                  // 错误提示
-                  // this.$message({
-                  //   message: 'res.message',
-                  //   type: 'warning'
-                  // });
-                  alert(res.message);
-                }
-                else{
-                  this.$router.push('/Index')
-                }
-              }
-            )
-        },
-        // 点击注册按钮 ==?待定?==
-        register () {
-          this.$refs.loginForm.validate(valid => {
-            if (valid) {
-              //this.$router.push('/login')
-              } else {
-               this.$router.push('/register')
-              }
-          })
-        }        
     },
+  },
+  methods: {
+    randomNum(min, max) {
+      return Math.floor(Math.random() * (max - min) + min);
+    },
+    refreshCode() {
+      this.identifyCode = "";
+      this.makeCode(this.identifyCodes, 4);
+    },
+    makeCode(o, l) {
+      for (let i = 0; i < l; i++) {
+        this.identifyCode += this.identifyCodes[
+          this.randomNum(0, this.identifyCodes.length)
+        ];
+      }
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          console.log("授权成功");
+        } else {
+          return false;
+        }
+      });
+    },
+  },
   created() {
     this.refreshCode();
   },
@@ -188,42 +115,41 @@
 </script>
 
 <style scoped >
-   
-   .login-container{
-     background-color: #212844;
-     height: 100%;
-     }
-    .login-box{
-      width: 450px;
-      height: 300px;
-      background-color: #fff;
-      border-radius: 5px;
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%,-50%);
-    }
-    .login-form{
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .login-head{
-      text-align: center;
-      font-weight: bold;
-      font-size: 30px;
-      margin: 10px;
-    }
-    .btns{
-      display: flex;
-      justify-content: center;
-      margin: 15px;
-    }
-    .login-code{
-      display: flex;
-      justify-content: center;
-      margin: 0px;      
-    }
+.login-container {
+  background-color: #385068;
+  height: 100%;
+}
+.login-box {
+  width: 450px;
+  height: 300px;
+  background-color: #fff;
+  border-radius: 5px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.login-form {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+.login-head {
+  text-align: center;
+  font-weight: bold;
+  font-size: 30px;
+  margin: 10px;
+}
+.btns {
+  display: flex;
+  justify-content: center;
+  margin: 15px;
+}
+.login-code {
+  display: flex;
+  justify-content: center;
+  margin: 0px;
+}
 </style>
