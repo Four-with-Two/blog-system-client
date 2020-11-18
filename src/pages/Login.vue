@@ -47,6 +47,7 @@
 
 <script>
   import SIdentify from '../components/sidentify'
+  import axios from "axios";
   export default {
     name:'userLogin',
     components: {SIdentify},
@@ -96,9 +97,17 @@
             }
           }
     },
+    watch: {
+        isDebugLogin(v) {
+            if (v) {
+                this.loginForm.password = '123'
+                this.refreshCode()
+            }
+        },
     identifyCode(v) {
       this.isDebugLogin && (this.loginForm.code = v);
-    },
+    }
+  },
     methods: {
         randomNum(min, max) {
             return Math.floor(Math.random() * (max - min) + min)
@@ -116,21 +125,50 @@
         },
         // 点击登录按钮/按回车后
         submitForm(formName) {
-            this.$refs[formName].validate(async valid => {
-                if (!valid) return
-                //发起真正的提交验证请求 
-                const{data:res} =await this.$http.post('http://gdut-hqcc.cn:8887/user/login',
-                {
-                  user_name:this.loginForm.username,
-                  mail:this.loginForm.username,
-                  password:this.loginForm.password
-                })
+            //  vue-resourse方法，弃之不用，转用axios
+            // this.$refs[formName].validate(async valid => {
+            //     if (!valid) return
+            //     //发起真正的提交验证请求 
+            //     const{data:res} =await this.$http.post('http://gdut-hqcc.cn:8887/user/login',
+            //     {
+            //       user_name:this.loginForm.username,
+            //       mail:this.loginForm.username,
+            //       password:this.loginForm.password
+            //     })
+            //     if(res.code !== true){
+            //       this.$message.error(res.message)
+            //     }
+            //     this.$message.success(res.message)
+            //     this.$router.push('/Index')
+            // })
+            let data={
+              user_name:this.loginForm.username,
+              mail:this.loginForm.username,
+              password:this.loginForm.password
+            }
+            console.log(data)
+            axios(
+              {
+                url:"http://gdut-hqcc.cn:8887/user/login",
+                method:"post",
+                data:data
+              }
+            ).then(
+              (res)=>{
+                console.log(res);
                 if(res.code !== true){
-                  this.$message.Error(res.message)
+                  // 错误提示
+                  // this.$message({
+                  //   message: 'res.message',
+                  //   type: 'warning'
+                  // });
+                  alert(res.message);
                 }
-                this.$message.success(res.message)
-                this.$router.push('/Index')
-            })
+                else{
+                  this.$router.push('/Index')
+                }
+              }
+            )
         },
         // 点击注册按钮 ==?待定?==
         register () {
