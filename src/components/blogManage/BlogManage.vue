@@ -1,13 +1,10 @@
 <template>
   <div class="manage-container" >
       <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="历史博客列表" name="first">
-          <showBlogList></showBlogList>
-        </el-tab-pane>
-        <el-tab-pane label="写新博客" name="second">
+        <el-tab-pane label="写新博客" name="first">
           <writeBlog></writeBlog>
         </el-tab-pane>
-        <el-tab-pane label="博客管理" name="third">
+        <el-tab-pane label="博客管理" name="second">
           <manageBlog></manageBlog>
         </el-tab-pane>
       </el-tabs>
@@ -15,14 +12,13 @@
 </template>
 
 <script>
-  import writeBlog from './writeBlog'
+  import writeBlog from './BlogEdit'
   import manageBlog from './manageBlog'
-  import showBlogList from './showBlogList'
   export default {
-    components: {writeBlog,manageBlog,showBlogList},
+    components: {writeBlog,manageBlog},
     data() {
       return {
-        activeName: 'first'
+        activeName: 'second'
       };
     },
     methods: {
