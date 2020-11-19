@@ -5,20 +5,24 @@ import App from './App'
 import router from './router'
 import './plugins/element'
 import axios from 'axios'
-console.log(axios)
 
 import './css/global.css'
-Vue.config.productionTip = false
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+axios.interceptors.request.use(
+  //配置请求头
+  config=>{
+    if(localStorage.getItem('Authorization')){
+      config.headers.Authorization = localStorage.getItem('Authorization')
+    }
+    return config
+  },
+  error=>{}
+  )
+ 
+Vue.use(ElementUI)
 
-//axios接口引用
-import Axios from "axios"
-Vue.prototype.$axios=Axios
-//qs引用
-import qs from "qs"	
-Vue.prototype.$qs=qs
-//vueresourse引用
-import VueResourse from 'vue-resource'
-Vue.use(VueResourse)
+Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({

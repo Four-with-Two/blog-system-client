@@ -12,14 +12,14 @@ import BlogModify from '@/components/blogManage/BlogModify'
 import MyInfo from '@/components/myInfo/MyInfo'
 
 Vue.use(Router)
-
-export default new Router({
+//先全部设置为需要身份验证
+const router = new Router({
   routes: [
-    { path: '/',redirect:'/index'},
+    { path: '/',redirect:'/index',meta:{requiresAuth:true}},//想要index页面需要先登录
     { path: '/index',name:'博客园',component:Index,
       children:[
     {path:'/',redirect:'/index/blogGround'},
-    {path:'/index/blogGround',name:'博客广场',component:BlogGround},
+    {path:'/index/blogGround',name:'博客广场',component:BlogGround,},
     {path:'/index/blogDetail',name:'博客详情',component:BlogDetail},
     {path:'/index/userInfo',name:'用户信息',component:UserInfo},
     {path:'/index/blogManage',name:'博客管理',component:BlogManage},
@@ -32,3 +32,17 @@ export default new Router({
     { path:'/register', name:'register',component:Register }
   ]
 })
+
+router.beforeEach((to,from,next)=>{//全局路由守卫，判断用户是不是登录了
+  if(to.path === '/login'|| to.path === "/register" ){//
+    next()
+  }else{
+    let token = localStorage.getItem('Authonrizantion')
+    if(token=="null"){
+      next('/login')
+    }else{
+      next()
+    }
+}})
+export default router
+
