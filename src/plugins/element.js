@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {RadioGroup,RadioButton,Menu,Submenu,MenuItemGroup,MenuItem,Container,Header,Aside,Footer,Main,Breadcrumb,BreadcrumbItem,Card,Button,Form,Input, Col, Row,FormItem, Tabs, TabPane, Pagination, Table, TableColumn} from 'element-ui'
+import {RadioGroup,RadioButton,Menu,Submenu,MenuItemGroup,MenuItem,Container,Header,Aside,Footer,Main,Breadcrumb,BreadcrumbItem,Card,Button,Form,Input, Col, Row,FormItem, Tabs, TabPane, Pagination, Table, TableColumn,Avatar} from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'; //还需要引入样式表才能使用
 
 Vue.use(Container)//使用Vue.use是用来全局注册插件,Vue.component()是用来注册全局组件的
@@ -27,4 +27,5 @@ Vue.use(TabPane)
 Vue.use(Pagination)
 Vue.use(Table)
 Vue.use(TableColumn)
+Vue.use(Avatar)
 
