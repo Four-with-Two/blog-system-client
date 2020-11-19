@@ -119,5 +119,16 @@ export default {
 </script>
 
 <style scoped>
-
+.blog-title{
+    margin-top: 20px;
+}
+.blog-summary{
+    margin-top: 20px;
+}
+.blog-text{
+    margin-top: 20px;
+}
+.btn{
+    margin-top: 25px;
+}
 </style>

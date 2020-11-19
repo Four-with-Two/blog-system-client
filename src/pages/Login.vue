@@ -88,7 +88,7 @@
               ],
               password: [
                 { required: true, message: '密码不能为空', trigger: 'blur' },
-                { min: 6, message: '密码长度最少为6位', trigger: 'blur' }
+                { min: 2, message: '密码长度最少为2位', trigger: 'blur' }
               ],
               code: [
                 { required: true, trigger: 'blur'},
