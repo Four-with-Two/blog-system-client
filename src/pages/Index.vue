@@ -83,6 +83,7 @@ export default {
       axios({
         url:
           "https://result.eolinker.com/fd19Qdzad6924ac154dd557d6145500001b68d1eedda6b8?uri=/blog/get/all",
+        // "http://gdut-hqcc.cn:8887/blog/get/all?page=1",
         methods: "get",
       }).then((res) => {
         this.allBlog = res.data.blogsDTOList;

@@ -161,7 +161,7 @@ export default {
           //status不存在，说明返回的是token，直接存下来
           console.log("登录失败");
         } else {
-          let token = res.data;
+          let token = "Bearer " + res.data;
           console.log(token);
           // this.storeLogin({ Authorization: token });
           store.commit("storeLogin", { Authorization: token });
