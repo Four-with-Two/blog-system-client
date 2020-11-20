@@ -15,7 +15,7 @@
             </el-input>
         </el-row>
     </div>
-    <!-- <div style="margin: 20px 0;"></div> -->
+    
     <div class="blog-summary">
         <el-row>
             <div class="post-lable">摘要</div>
@@ -29,7 +29,7 @@
             </el-input>
         </el-row>        
     </div>
-    <!-- <div style="margin: 20px 0;"></div> -->
+    
     <div class="blog-text">
         <el-row>
             <div class="post-lable">正文</div>
@@ -41,10 +41,10 @@
             </div>
         </el-row>      
     </div>
-    <!-- <div style="margin: 20px 0;"></div> -->
+    
     <div class="btn">
         <el-row>
-            <el-button type="primary" v-on:click.prevent="post">添加博客</el-button>
+            <el-button type="primary" @click="postBlog">添加博客</el-button>
             <el-button type="primary">取消</el-button>
         </el-row>
     </div>
@@ -53,7 +53,7 @@
     </div>
 
 
-    <div class="succeed" v-if="submitted">
+    <div class="succeed" v-if="!submitted">
         博客发表成功！
         <h3>预览如下</h3>
         <div class="preview">
@@ -64,13 +64,7 @@
             <p>{{blog.content}}</p>
         </div>
     </div>
-    <!-- 测试数据获取 -->
-    <!-- <div class="show">
-        showvie
-        <p>title:{{blog.title}}</p>
-        <p>summary:{{blog.summary}}</p>
-        <p>content:{{blog.content}}</p>
-    </div> -->
+
 </div>
 
 </template>
@@ -78,6 +72,7 @@
 <script>
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+import Axios from 'axios'
 export default {
     name:'writeBlog',
     components:{
@@ -99,20 +94,43 @@ export default {
             this.html=render;
             console.log(this.html)
         },
-        post:function(){
-            //post数据库的地址链接为：http://gdut-hqcc.cn:8887/blog/newBlog
-            //此为测试网站链接，后续再替掉
-            this.$http.post("https://jsonplaceholder.typicode.com/posts",
-            {
-                title:this.blog.title,
-                summary:this.blog.summary,
-                content:this.blog.content,
-                author:1   //作者id，不知道该咋办……这里搞成默认1
+        //提交博客时的事件
+        postBlog(){
+            var jsons=JSON.stringify(
+                {
+                    title:this.blog.title,
+                    summary:this.blog.summary,
+                    content:this.blog.content
+                }
+            )
+            this.$confirm('确认保存博客?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+            center: true})
+            .then(()=>{
+                Axios.post('http://gdut-hqcc.cn:8887/blog/newBlog',
+                jsons)
+                .then((res)=>{
+                    console.log(res);
+                    if(res.code==false){
+                    this.$message({
+                        type: 'error',
+                        message: '保存失败'
+                    });
+                    console.log(res.message);
+                    }else if(res.code==true){
+                    this.submitted=true;
+                    this.$message({
+                        type: 'success',
+                        message: '保存成功'
+                    });
+                    }
+                },error=>{
+                console.log('错误!',error.message);
+                });
             })
-            .then(function(data){
-                console.log(data);
-                this.submitted=true;
-            });
+            
         }
     }
 }

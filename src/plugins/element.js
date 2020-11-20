@@ -27,7 +27,6 @@ Vue.use(TabPane)
 Vue.use(Pagination)
 Vue.use(Table)
 Vue.use(TableColumn)
-
-
 Vue.use(Avatar)
+
 

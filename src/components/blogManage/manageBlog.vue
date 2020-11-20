@@ -1,7 +1,8 @@
 <template>
     <div class="manageBlog-container">
         <!-- 个人博客列表区域 -->
-        <el-table :data="tableData" border stripe>
+        <el-table :data="blogs" border stripe> 
+            <!-- 测试时把data值设为tableData,实测时把data设为blogs -->
             <el-table-column type="index" label="序号" width="80px"></el-table-column>
             <el-table-column label="标题" prop="title"></el-table-column>
             <el-table-column label="发表日期" prop="publish_date" width="150px"></el-table-column>
@@ -60,7 +61,6 @@ export default {
             tableData,
             //获取个人博客列表的参数
             queryInfo:{
-                //id:userID,//尚未获得，假定为userID
                 page:1    //默认初始化时在第1页
             },
             //获取个人博客数量和页数
@@ -83,7 +83,7 @@ export default {
         //获取用户博客总数量和总页码数的事件
         getPersonalBlogCount(){
             //有了token之后无需提供作者id,直接获取页码等数据
-            Axios.get("http://gdut-hqcc.cn:8887/blog/count/personal")
+            Axios.get("http://gdut-hqcc.cn:8887/blog/count/myBlogs")
             .then((res)=>{
                 console.log(res);
                 this.count=res;
@@ -93,19 +93,12 @@ export default {
         },
         //获取用户博客列表信息的事件
         getPersonalBlogList(){
-            //this.$http.get("http://gdut-hqcc.cn:8887/blog/get/personal",{blogsDTOList})
-            let data=this.queryInfo
+            let data=this.queryInfo //默认从第一页开始请求
             console.log(data)
-            Axios(
-                {
-                    url:"http://gdut-hqcc.cn:8887/blog/get/personal",
-                    method:"post",
-                    data:data
-                }
-            ).then(
-                (res)=>{
+            Axios.get("http://gdut-hqcc.cn:8887/blog/get/myBlogs",data)
+            .then((res)=>{
                     console.log(res);
-                    if(res.code!==true){
+                    if(res.code==false){
                         //这里不对劲,alert提示为undefined....
                         return alert(res.message)
                     }
@@ -113,7 +106,7 @@ export default {
                 }
             )
         },
-        //点击编辑时,跳转到blogEdit页面的事件
+        //点击编辑时,跳转到blogModify页面的事件
         alterPage(){this.$router.push('/index/blogModify')},
         //确认删除弹框的事件
         deleteItem() {
