@@ -164,8 +164,10 @@ export default {
           let token = "Bearer " + res.data;
           console.log(token);
           // this.storeLogin({ Authorization: token });
-          store.commit("storeLogin", { Authorization: token });
+          store.commit("storeLogin", { Authorization: token, token: res.data });
+          // store.commit("storeLogin", { token: res.data });
           console.log(store.state.Authorization);
+          console.log(store.state.token);
           this.$router.push("/");
         }
       });
