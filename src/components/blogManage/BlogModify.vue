@@ -1,61 +1,59 @@
 <template>
-  <div class="blogEditor-container">
-    <el-card class="box-card">
-      <div class="submit" v-if="!submitted">
+<div class="writeBlog-container">
+    <!-- <div class="submit" v-if="!submitted"> -->
+    <div class="submit">
+    <div class="blog-title">
+        <el-row>
+            <div class="post-lable">标题</div>
+        </el-row>
+        <el-row>
+            <el-input
+            type="text"
+            autosize
+            v-model="blog.title"
+            ref="title">
+            </el-input>
+        </el-row>
+    </div>
+    
+    <div class="blog-summary">
+        <el-row>
+            <div class="post-lable">摘要</div>
+        </el-row>
+        <el-row>
+            <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            v-model="blog.summary"
+            ref="summary">
+            </el-input>
+        </el-row>        
+    </div>
+    
+    <div class="blog-text">
+        <el-row>
+            <div class="post-lable">正文</div>
+        </el-row>
+        <!-- markdown格式组件 -->
+        <el-row>
+            <div class="editor">
+                <mavon-editor v-model="blog.content" ref="content" @change="change"></mavon-editor>
+            </div>
+        </el-row>      
+    </div>
+    
+    <div class="btn">
+        <el-row>
+            <el-button type="primary" @click="postBlog">保存修改</el-button>
+            <el-button type="primary">取消</el-button>
+        </el-row>
+    </div>
 
-      <div class="blog-title">
-          <el-row>
-              <div class="post-lable">标题</div>
-          </el-row>
-          <el-row>
-              <el-input
-              type="text"
-              autosize
-              placeholder="请输入博客标题"
-              v-model="blog.title">
-              </el-input>
-          </el-row>
-      </div>
-      
-      <div class="blog-summary">
-          <el-row>
-              <div class="post-lable">摘要</div>
-          </el-row>
-          <el-row>
-              <el-input
-              type="textarea"
-              :autosize="{ minRows: 2, maxRows: 4}"
-              placeholder="请输入博客摘要"
-              v-model="blog.summary">
-              </el-input>
-          </el-row>        
-      </div>
-      
-      <div class="blog-text">
-          <el-row>
-              <div class="post-lable">正文</div>
-          </el-row>
-          <!-- markdown格式组件 -->
-          <el-row >
-              <div class="editor">
-                  <mavon-editor v-model="blog.content" @change="change"></mavon-editor>
-              </div>
-          </el-row>      
-      </div>
-      
-      <div class="btn">
-          <el-row>
-              <el-button type="primary" v-on:click.prevent="post" @click="saveItem">保存修改</el-button>
-              <el-button type="primary">取消</el-button>
-          </el-row>
-      </div>
+
+    </div>
 
 
-      </div>
-    </el-card>
-
-    <div class="succeed" v-if="submitted">
-        保存修改成功！
+    <!-- <div class="succeed" v-if="submitted">
         <h3>预览如下</h3>
         <div class="preview">
             <p>标题：{{blog.title}}</p>
@@ -64,15 +62,18 @@
             <p>正文：</p>
             <p>{{blog.content}}</p>
         </div>
-    </div>
-  </div>
+    </div> -->
+
+</div>
+
 </template>
 
 <script>
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+import Axios from 'axios'
 export default {
-    name:'BlogEditor',
+    name:'writeBlog',
     components:{
         mavonEditor
     },
@@ -86,48 +87,63 @@ export default {
             submitted:false
         }
     },
+    created(){
+        axios({
+        url: `http://gdut-hqcc.cn:8887/blog/get/${this.$route.query.id}`,
+        // `https://www.easy-mock.com/mock/5fad499aa12a7e2dea86ee90/blog/get/${this.$route.query.id}`,
+        method: "get",
+        }).then((res) => {
+        console.log(res.data);
+        this.blogDetailContent = res.data;
+        });
+    },
     methods:{
         change(value,render){
             //实时获取转成html的数据
             this.html=render;
             console.log(this.html)
         },
-        post:function(){
-            //post数据库的地址链接为：http://gdut-hqcc.cn:8887/blog/newBlog
-            //此为测试网站链接，后续再替掉
-            this.$http.post("https://jsonplaceholder.typicode.com/posts",
-            {
-                title:this.blog.title,
-                summary:this.blog.summary,
-                content:this.blog.content,
-                author:1   //作者id，不知道该咋办……这里搞成默认1
-            })
-            .then(function(data){
-                console.log(data);
-                this.submitted=true;
-            });
-        },
-        //确认保存时的事件
-        saveItem(){
-          this.$confirm('此操作将修改该博客内容, 是否继续?', '提示', {
+        //提交博客时的事件
+        postBlog(){
+            let data ={
+                    title:this.blog.title,
+                    summary:this.blog.summary,
+                    content:this.blog.content
+                }
+            this.$confirm('确认保存修改?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning',
-            center: true
-          }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '保存成功!'
-            });
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消保存'
-            });
-          });
+            center: true})
+            .then(()=>{
+                Axios.post('http://gdut-hqcc.cn:8887/blog/newBlog',data)
+                .then((res)=>{
+                    console.log(res);
+                    if(res.data.code==false){
+                    this.$message({
+                        type: 'error',
+                        message: '保存失败'
+                    });
+                    console.log(res.data.message);
+                    }else if(res.data.code==true){
+                    this.submitted=true;
+                    this.$message({
+                        type: 'success',
+                        message: '保存成功'
+                    });
+                    //清空内容的功能
+                    this.$refs[title].resetFields();
+                    this.$refs[summary].resetFields();
+                    this.$refs[content].resetFields();
+                    }
+                },error=>{
+                console.log('错误!',error.message);
+                });
+            })
+            
         }
-    }        
-};
+    }
+}
 </script>
 
 <style scoped>
