@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <el-card class="box-card" style="margin: 10px">
       <div slot="header" class="clearfix">
         <div
           style="
@@ -53,8 +53,9 @@ export default {
   },
   created() {
     axios({
-      url: `https://mockapi.eolinker.com/fd19Qdzad6924ac154dd557d6145500001b68d1eedda6b8/blog/get/{this.$route.query.id}`,
+      url: `http://gdut-hqcc.cn:8887/blog/get/${this.$route.query.id}`,
       // `https://www.easy-mock.com/mock/5fad499aa12a7e2dea86ee90/blog/get/${this.$route.query.id}`,
+      method: "get",
     }).then((res) => {
       console.log(res.data);
       this.blogDetailContent = res.data;
@@ -63,7 +64,12 @@ export default {
   methods: {
     toUserInfo: function (e) {
       console.log(e.currentTarget.getAttribute("id"));
-      console.log(123);
+      this.$router.push({
+        path: "/index/userInfo",
+        query: {
+          id: e.currentTarget.getAttribute("id"),
+        },
+      });
     },
   },
 };
