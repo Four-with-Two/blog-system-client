@@ -71,7 +71,7 @@
 <script>
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
-import Axios from 'axios'
+import axios from 'axios'
 export default {
     name:'writeBlog',
     components:{
@@ -84,20 +84,34 @@ export default {
                 summary:'',
                 content:''
             },
+            blID:'',
             submitted:false
         }
     },
     created(){
         axios({
         url: `http://gdut-hqcc.cn:8887/blog/get/${this.$route.query.id}`,
-        // `https://www.easy-mock.com/mock/5fad499aa12a7e2dea86ee90/blog/get/${this.$route.query.id}`,
         method: "get",
         }).then((res) => {
-        console.log(res.data);
-        this.blogDetailContent = res.data;
+            if(res.data.code==true){
+                console.log("跳到修改页面后get到数据了:"+res.data.message);
+                this.blog.title = res.data.title;
+                //this.blog.summary = res.data.summary;
+                this.blog.content = res.data.content;
+            }
+
         });
+        this.getParams();
     },
-    methods:{
+    watch:{
+        '$route':'getParams'
+    },
+    methods:{   
+        getParams(){
+            const routerParams_blogID = this.$route.query.id
+            this.blID=routerParams_blogID
+            console.log("获取到的博客id存进数据里"+this.blID)
+        },
         change(value,render){
             //实时获取转成html的数据
             this.html=render;
@@ -116,9 +130,9 @@ export default {
             type: 'warning',
             center: true})
             .then(()=>{
-                Axios.post('http://gdut-hqcc.cn:8887/blog/newBlog',data)
+                axios.post('http://gdut-hqcc.cn:8887/blog/modify?id='+this.blID,data)
                 .then((res)=>{
-                    console.log(res);
+                    console.log("post成功返回修改信息:"+res);
                     if(res.data.code==false){
                     this.$message({
                         type: 'error',
@@ -132,9 +146,9 @@ export default {
                         message: '保存成功'
                     });
                     //清空内容的功能
-                    this.$refs[title].resetFields();
-                    this.$refs[summary].resetFields();
-                    this.$refs[content].resetFields();
+                    // this.$refs[title].resetFields();
+                    // this.$refs[summary].resetFields();
+                    // this.$refs[content].resetFields();
                     }
                 },error=>{
                 console.log('错误!',error.message);

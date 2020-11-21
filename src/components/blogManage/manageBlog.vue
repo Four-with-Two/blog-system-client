@@ -10,7 +10,7 @@
             <el-table-column label="操作" width="150px">
                 <template slot-scope="scope">
                     <!-- 修改按钮 -->
-                    <el-button type="primary" icon="el-icon-edit" size="small" @click="alterPage"></el-button>
+                    <el-button type="primary" icon="el-icon-edit" size="small" @click="alterPage(scope.row.id)"></el-button>
                     <!-- 删除按钮 -->
                     <el-button type="danger" icon="el-icon-delete" size="small" @click="deleteItem"></el-button>
                     <!-- {{scope.row}} -->
@@ -112,12 +112,14 @@ export default {
             )
         },
         //点击编辑时,跳转到blogModify页面的事件
-        alterPage(){
+        alterPage(idc){
+            console.log("当前获取的博客id:"+idc);
             this.$router.push({
                 path: "/index/blogModify",
                 query: {
-                id: e.currentTarget.getAttribute(this.blogs.id),
-                },
+                    //获取当前作用域插槽内的博客id
+                    id: idc
+                }
             });
         },
         //确认删除弹框的事件
