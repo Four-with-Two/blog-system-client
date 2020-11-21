@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import writeBlog from './writeBlog'
+  import writeBlog from './BlogEdit'
   import manageBlog from './manageBlog'
   export default {
     components: {writeBlog,manageBlog},

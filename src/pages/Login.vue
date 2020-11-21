@@ -11,7 +11,7 @@
       >
         <p class="login-head">纯享版博客园登录</p>
         <!-- 邮箱/用户名 -->
-        <div>{{}}</div>
+        <!-- <div>{{}}</div> -->
         <el-form-item prop="username">
           <el-input
             v-model="loginForm.username"
@@ -109,7 +109,7 @@ export default {
         ],
         password: [
           { required: true, message: "密码不能为空", trigger: "blur" },
-          { min: 6, message: "密码长度最少为6位", trigger: "blur" },
+          { min: 2, message: "密码长度最少为2位", trigger: "blur" },
         ],
         code: [
           { required: true, trigger: "blur" },
@@ -161,6 +161,7 @@ export default {
           //status不存在，说明返回的是token，直接存下来
           console.log("登录失败");
         } else {
+          console.log(res.data)
           let token = "Bearer " + res.data;
           console.log(token);
           // this.storeLogin({ Authorization: token });
