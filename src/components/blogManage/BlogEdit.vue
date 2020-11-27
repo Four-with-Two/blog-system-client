@@ -47,7 +47,7 @@
     <div class="btn">
         <el-row>
             <el-button type="primary" @click="postBlog">添加博客</el-button>
-            <el-button type="primary">取消</el-button>
+            <el-button type="primary" @click="cancleBtn">取消</el-button>
         </el-row>
     </div>
 
@@ -124,15 +124,26 @@ export default {
                         message: '保存成功'
                     });
                     //清空内容的功能
-                    this.$refs[title].resetFields();
-                    this.$refs[summary].resetFields();
-                    this.$refs[content].resetFields();
+                    location.reload();
+                    // this.$router.push(0)
+                    // this.$refs[title].resetFields();
+                    // this.$refs[summary].resetFields();
+                    // this.$refs.content.value='';
                     }
                 },error=>{
                 console.log('错误!',error.message);
                 });
             })
             
+        },
+        //取消按钮后的事件
+        cancleBtn(){
+            this.$message({
+                type:"info",
+                message:"取消保存"
+            });
+            location.reload();
+            // this.$router.push("/index/blogManage");
         }
     }
 }

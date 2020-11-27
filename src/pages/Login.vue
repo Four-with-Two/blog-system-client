@@ -32,15 +32,17 @@
           <el-row :span="24">
             <el-col :span="12">
               <el-input
+                ref="veriCode"
                 v-model="loginForm.code"
                 placeholder="请输入验证码"
                 @keyup.enter.native="submitForm('loginForm')"
               ></el-input>
             </el-col>
             <el-col :span="12">
-              <div class="login-code" @click="refreshCode">
+              <div class="login-code" @click="getCode">
                 <!--验证码组件-->
-                <s-identify :identifyCode="identifyCode"></s-identify>
+                <img :src="this.imgCode"
+                  style="width: 122px;height: 38px;cursor: pointer;" />
               </div>
             </el-col>
           </el-row>
@@ -54,15 +56,10 @@
         </el-form-item>
       </el-form>
     </div>
-
-    <div class="aler-box">
-      <!-- 账号密码匹配结果提示框 -->
-    </div>
   </div>
 </template>
 
 <script>
-import SIdentify from "../components/sidentify";
 import axios from "axios";
 import store from "@/store/index.js";
 console.log(store);
@@ -71,79 +68,51 @@ import { mapState } from "vuex";
 console.log(mapMutations);
 export default {
   name: "userLogin",
-  components: { SIdentify },
   data() {
-    // 用户名自定义验证规则?
-    const validateUsername = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error("请输入正确的用户名"));
-      } else {
-        console.log("user", value);
-        callback();
-      }
-    };
-    // 验证码自定义验证规则
-    const validateVerifycode = (rule, value, callback) => {
-      if (this.identifyCode !== value) {
-        this.loginForm.code = "";
-        this.refreshCode();
-        callback(new Error("请输入正确的验证码"));
-      } else {
-        callback();
-      }
-    };
     return {
-      isDebugLogin: false,
       loginForm: {
         username: "",
         password: "",
-        code: "",
+        code: ""      //输入的验证码
       },
-      identifyCodes: "1234567890",
-      identifyCode: "",
+      imgCode:"",//获取的图片url,example:gdut-hqcc.cn:8887/avatar/2020/11/27/b7a12c5bb4e746a58b714bc034450878.jpg
+      imgUUID:"",
       loginRules: {
         // 绑定在form表单中的验证规则，此处对应的是prop，而非return的data
         username: [
-          { required: true, message: "用户名/邮箱不能为空", trigger: "blur" },
-          { validator: validateUsername, trigger: "blur" },
+          { required: true, message: "用户名/邮箱不能为空", trigger: "blur" }
         ],
         password: [
           { required: true, message: "密码不能为空", trigger: "blur" },
           { min: 2, message: "密码长度最少为2位", trigger: "blur" },
         ],
         code: [
-          { required: true, trigger: "blur" },
-          { validator: validateVerifycode, trigger: "blur" },
-        ],
-      },
-    };
-  },
-  watch: {
-    isDebugLogin(v) {
-      if (v) {
-        this.loginForm.password = "123";
-        this.refreshCode();
+          { required: true, message: "验证码不能为空",trigger: "blur" }
+        ]
       }
-    },
-    identifyCode(v) {
-      this.isDebugLogin && (this.loginForm.code = v);
-    },
+    };
   },
   methods: {
     ...mapMutations(["storeLogin"]),
-    randomNum(min, max) {
-      return Math.floor(Math.random() * (max - min) + min);
-    },
-    refreshCode() {
-      this.identifyCode = "";
-      this.makeCode(this.identifyCodes, 4);
-    },
-    makeCode(o, l) {
-      for (let i = 0; i < l; i++) {
-        this.identifyCode += this.identifyCodes[
-          this.randomNum(0, this.identifyCodes.length)
-        ];
-      }
+    getCode(){
+      //获取验证码图片url事件
+      axios({
+      url: `http://gdut-hqcc.cn:8887/picture/captcha`,
+      method: "get",
+      })
+      .then((res)=>{
+        if(res.data.code=='6666'){
+          console.log(res.data);
+          console.log("获取验证码信息成功"+res.data.message);
+          this.imgCode=res.data.data.url;
+          console.log(this.imgCode);
+          this.imgCode='http://'+this.imgCode;
+          console.log(this.imgCode);
+          this.imgUUID=res.data.data.uuid;
+        }else{
+          console.log("获取验证码信息失败"+res.data.message);
+        }
+      })
     },
     // 点击登录按钮/按回车后
     submitForm(formName) {
@@ -152,26 +121,57 @@ export default {
         user_name: this.loginForm.username,
         password: this.loginForm.password,
       };
+      let codedata=this.imgUUID;
+      console.log("UUID传参："+codedata);
+      let vericodedata=this.loginForm.code;
+      console.log("获取的验证码输入传参："+vericodedata);
+      //验证码验证post部分
       axios({
-        url: "http://gdut-hqcc.cn:8887/user/login",
-        method: "post",
-        data: data,
-      }).then((res) => {
-        if (res.data.code == false) {
-          //status不存在，说明返回的是token，直接存下来
-          console.log("登录失败");
-        } else {
-          console.log(res.data)
-          let token = "Bearer " + res.data;
-          console.log(token);
-          // this.storeLogin({ Authorization: token });
-          store.commit("storeLogin", { Authorization: token, token: res.data });
-          // store.commit("storeLogin", { token: res.data });
-          console.log(store.state.Authorization);
-          console.log(store.state.token);
-          this.$router.push("/");
+        url:"http://gdut-hqcc.cn:8887/picture/verification",
+        method:"post",
+        headers:{
+          simpleUUID:codedata
+        },
+        data:{
+          verification_code:vericodedata
         }
-      });
+      })
+      .then((res)=>{
+        if(res.data.code==true){
+          console.log("验证码验证成功"+res.data);
+          //验证码成功后才登录
+          axios({
+              url: "http://gdut-hqcc.cn:8887/user/login",
+              method: "post",
+              data: data,
+            }).then((res) => {
+              if (res.data.code == false) {
+                //status不存在，说明返回的是token，直接存下来
+                console.log("登录失败");
+              } else {
+                console.log(res.data)
+                let token = "Bearer " + res.data;
+                console.log(token);
+                // this.storeLogin({ Authorization: token });
+                store.commit("storeLogin", { Authorization: token, token: res.data });
+                // store.commit("storeLogin", { token: res.data });
+                console.log(store.state.Authorization);
+                console.log(store.state.token);
+                this.$router.push("/");
+              }
+            });
+        }
+        else {
+          console.log("验证码验证失败");
+          console.log(res.data);
+          this.$message({
+            type:"error",
+            message:"验证码错误"
+          });
+          this.$refs[veriCode].resetFields();
+        }
+      })
+ 
     },
     // 点击注册按钮 ==?待定?==
     register() {
@@ -184,9 +184,10 @@ export default {
       });
     },
   },
-  created() {
-    this.refreshCode();
-  },
+  created(){
+    //生成验证码事件,即获取图片url事件
+    this.getCode();
+  }
 };
 </script>
 

@@ -45,7 +45,7 @@
     <div class="btn">
         <el-row>
             <el-button type="primary" @click="postBlog">保存修改</el-button>
-            <el-button type="primary">取消</el-button>
+            <el-button type="primary" @click="cancleBtn">取消</el-button>
         </el-row>
     </div>
 
@@ -96,7 +96,7 @@ export default {
             if(res.data.code==true){
                 console.log("跳到修改页面后get到数据了:"+res.data.message);
                 this.blog.title = res.data.title;
-                //this.blog.summary = res.data.summary;
+                this.blog.summary = res.data.summary;
                 this.blog.content = res.data.content;
             }
 
@@ -145,6 +145,7 @@ export default {
                         type: 'success',
                         message: '保存成功'
                     });
+                    this.$router.push("/index/blogManage");
                     //清空内容的功能
                     // this.$refs[title].resetFields();
                     // this.$refs[summary].resetFields();
@@ -154,7 +155,17 @@ export default {
                 console.log('错误!',error.message);
                 });
             })
+            .catch(()=>{
+            })
             
+        },
+        //点击取消后的事件
+        cancleBtn(){
+            this.$message({
+                type:"info",
+                message:"取消保存"
+            });
+            this.$router.push("/index/blogManage");
         }
     }
 }
