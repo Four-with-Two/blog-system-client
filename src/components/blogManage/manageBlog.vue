@@ -12,7 +12,7 @@
                     <!-- 修改按钮 -->
                     <el-button type="primary" icon="el-icon-edit" size="small" @click="alterPage(scope.row.id)"></el-button>
                     <!-- 删除按钮 -->
-                    <el-button type="danger" icon="el-icon-delete" size="small" @click="deleteItem"></el-button>
+                    <el-button type="danger" icon="el-icon-delete" size="small" @click="deleteItem(scope.row.id)"></el-button>
                     <!-- {{scope.row}} -->
                 </template>
             </el-table-column>
@@ -123,23 +123,69 @@ export default {
             });
         },
         //确认删除弹框的事件
-        deleteItem() {
-            this.$confirm('此操作将永久删除该博客, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning',
-            center: true
-            }).then(() => {
-            this.$message({
-                type: 'success',
-                message: '删除成功!'
-            });
-            }).catch(() => {
-            this.$message({
-                type: 'info',
-                message: '已取消删除'
-            });
-            });
+        deleteItem(idc) {
+            let data=idc;
+            console.log("测试当前行为"+idc);
+            Axios({url:"http://gdut-hqcc.cn:8887/blog/delete",method:"get",params:{id:data}})
+            .then((res)=>{
+                console.log("测试有无删除返回值"+res.data);
+                if(res.data.code==true){
+                    this.$message({
+                        type:'success',
+                        message:'删除成功！'
+                    });
+                    this.$router.go(0);
+                }
+                else if(res.data.code==false){
+                    this.$message({
+                        type:'error',
+                        message:'删除失败'
+                    });
+                    console.log("post成功，删除失败"+res.data.message);
+                }
+            })
+            .catch(error=>{
+                console.log("post失败"+res.data.message);
+            })
+            // this.$confirm('此操作将永久删除该博客, 是否继续?', '提示', {
+            // confirmButtonText: '确定',
+            // cancelButtonText: '取消',
+            // type: 'warning',
+            // center: true
+            // })
+            // .then(() => {
+            //     console.log("测试当前行为"+idc);
+            //     Axios.get("http://gdut-hqcc.cn:8887/blog/delete",idc)
+            //     .then((res)=>{
+            //         console.log("测试有无删除返回值"+res.data);
+            //         if(res.data.code==true){
+            //             this.$message({
+            //                 type: 'success',
+            //                 message: '删除成功!'
+            //             });                          
+            //         }
+            //         else if(res.data.code==false){
+            //             this.$message({
+            //                 type: 'error',
+            //                 message: '删除失败!'
+            //             });
+            //             console.log("post成功，删除失败"+res.data.message);                     
+            //         }
+            //     })
+            //     .catch(error=>{
+            //         console.log("post方法error"+res.data.message);                       
+            //     })
+            // // this.$message({
+            // //     type: 'success',
+            // //     message: '删除成功!'
+            // // });
+            // })
+            // .catch(() => {
+            // this.$message({
+            //     type: 'info',
+            //     message: '取消删除'
+            // });
+            // });
         }
     
     }
