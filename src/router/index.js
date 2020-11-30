@@ -34,11 +34,13 @@ const router = new Router({
 })
 
 router.beforeEach((to,from,next)=>{//全局路由守卫，判断用户是不是登录了
-  if(to.path === '/login'|| to.path === "/register" ){//
+  if(to.path === '/login'|| to.path === "/register" ){
+
     next()
   }else{
-    let token = localStorage.getItem('Authonrizantion')
-    if(token=="null"){
+    let token = localStorage.getItem('Authorization')
+    console.log(token)
+    if(token==null){
       next('/login')
     }else{
       next()

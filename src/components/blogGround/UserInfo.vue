@@ -20,9 +20,9 @@
             >查看博客</el-button
           >
         </div>
-        <div class="text item">{{ item.name }}</div>
         <div class="text item">{{ item.summary }}</div>
-        <div class="text item">{{ item.author }}</div>
+        <div class="name">{{ item.name }}</div>
+        <div class="date">{{ item.publish_date }}</div>
       </el-card>
     </el-card>
   </div>
@@ -39,6 +39,7 @@ export default {
   },
   created(options) {
     console.log(this.$route.query.id);
+    console.log(this.$route.query.name);
     axios({
       url: `http://gdut-hqcc.cn:8887/blog/get/personal?id=${this.$route.query.id}&page=1`,
     }).then((res) => {
@@ -47,7 +48,7 @@ export default {
     });
     console.log(123);
     axios({
-      url: "http://gdut-hqcc.cn:8887/my_data/exhibition/htrhtr",
+      url: "http://gdut-hqcc.cn:8887/my_data/exhibition/"+this.$route.query.name,
       method: "get",
     }).then((res) => {
       this.userInfo = res.data.data;
@@ -61,4 +62,14 @@ export default {
 </script>
 
 <style  scoped>
+.name{
+  color: #0053ad;
+  float: left;
+  margin-top: 5px;
+  margin-right: 10px;
+}
+.date{
+  color: #bdbdbd;
+  margin-top: 5px;
+}
 </style>

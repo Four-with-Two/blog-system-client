@@ -1,14 +1,7 @@
 <template>
-  <div>
+  <div style="min-width:1350px">
     <!-- 头部导航栏 -->
     <div class="header">
-      <!-- 左侧四个链接 -->
-      <div class="head_nav">
-        <a href="">园子</a>
-        <a href="">关注</a>
-        <a href="">粉丝</a>
-        <a href="">消息</a>
-      </div>
       <!-- 右侧博客logo -->
       <div class="logo">
         <a href="">
@@ -24,17 +17,33 @@
         <a href="">博客广场</a>
         <a href="http://localhost:8080/#/index/blogManage">我的博客</a>
         <a href="">设置</a>
-        <a href="">退出</a>
+        <span href="" @click="loginout">退出</span>
       </div>
     </div>
+    <el-upload
+          class="upload-demo"
+          action="http://gdut-hqcc.cn:8887/picture/avatar/upload"
+          :headers="headers"
+          multiple
+          :limit=5
+          :on-success="newAvatar"
+          name="image"
+          show-file-list
+          :on-change="change"
+          :file-list="fileList"
+          style="display:none"
+          auto-upload
+          >
+    <el-button size="small" type="primary" id="avatar">点击上传</el-button>
+    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+    </el-upload>
+    <!-- <input type="file" id="avatar" @change="selectImg"> -->
     <!-- 中间的填写信息框 -->
     <div class="container">
       <div class="top_nav">
-        <a href="">上传头像</a>
-        <a href="">账户设置</a>
+        <a href="" @click="uploadImg">上传头像</a>
+        <a href="" @click="refreshPassword">密码修改</a>
         <a href="" id="mydata">我的资料</a>
-        <a href="">个人信息</a>
-        <a href="">联系方式</a>
       </div>
       <!-- table填写框 -->
       <div class="from">
@@ -43,226 +52,170 @@
             <tr>
               <td class="tr_title"></td>
               <td class="tr_content"></td>
-              <td class="tr_see">谁可看见</td>
             </tr>
             <tr>
-              <td class="tr_title">用户名：</td>
-              <td class="tr_content"><input class="td_inM"></td>
-              <td class="tr_see">
-                <select id="see_name">
-                  <option value="1">任何人</option>
-                  <option value="2">仅好友</option>
-                  <option value="3">私密</option>
-                </select>
-              </td>
+               <td class="tr_title" id="img">用户头像：</td>
+              <td class="tr_content" id="img"><el-avatar :size="50" :src="img"></el-avatar></td>
             </tr>
             <tr>
-              <td class="tr_title">昵称：</td>
-              <td class="tr_content"><input class="td_inM"></td>
-              <td class="tr_see">
-                <select id="see_name">
-                  <option value="1">任何人</option>
-                  <option value="2">仅好友</option>
-                  <option value="3">私密</option>
-                </select>
-              </td>
+              <td class="tr_title" id="user_name">用户名：</td>
+              <td class="tr_content"><input class="td_inM" v-model="baseUserInfo.user_name"></td>
             </tr>
             <tr>
-              <td class="tr_title">性别：</td>
+              <td class="tr_title" id="nick_name">昵称：</td>
+              <td class="tr_content"><input class="td_inM" v-model="baseUserInfo.nick_name"></td>
+            </tr>
+            <tr>
+              <td class="tr_title" id="gender">性别：</td>
               <td class="tr_content">
-                <input class="radio_block" id="Gender" name="Gender" type="radio" value="1" />
+                <input class="radio_block" v-model="baseUserInfo.gender" type="radio" value="M" />
                 <label for="ctl00_cphMain_radio_gender_0">男</label>
-                <input class="radio_block" id="Gender" name="Gender" type="radio" value="2" />
+                <input class="radio_block" v-model="baseUserInfo.gender" type="radio" value="F" />
                 <label for="ctl00_cphMain_radio_gender_1">女</label>
               </td>
-              <td class="tr_see">
-                <select id="see_name">
-                  <option value="1">任何人</option>
-                  <option value="2">仅好友</option>
-                  <option value="3">私密</option>
-                </select>
-              </td>
             </tr>
             <tr>
-              <td class="tr_title">邮箱：</td>
-              <td class="tr_content"><input class="td_inM"></td>
-              <td class="tr_see">
-                <select id="see_name">
-                  <option value="1">任何人</option>
-                  <option value="2">仅好友</option>
-                  <option value="3">私密</option>
-                </select>
-              </td>
+              <td class="tr_title" id="mail">邮箱：</td>
+              <td class="tr_content"><input class="td_inM" v-model="baseUserInfo.mail"></td>
             </tr>
            <tr>
-              <td class="tr_title">电话号：</td>
-              <td class="tr_content"><input class="td_inM"></td>
-              <td class="tr_see">
-                <select id="see_name">
-                  <option value="1">任何人</option>
-                  <option value="2">仅好友</option>
-                  <option value="3">私密</option>
-                </select>
+              <td class="tr_title" id="phone">电话号：</td>
+              <td class="tr_content"><input class="td_inM" v-model="baseUserInfo.phone"></td>
+            </tr>
+            <tr>
+              <td class="tr_title" id="birthday">生日：</td>
+              <td class="tr_content">
+               <input class="td_inM" v-model="baseUserInfo.birthday">
               </td>
             </tr>
             <tr>
-              <td class="tr_title">生日：</td>
+              <td class="tr_title" id="profile">个人简介：</td>
               <td class="tr_content">
-                <!-- 选择年月日 -->
-                <select data-val="true" data-val-required="The BirthdayYear field is required." id="year" name="BirthdayYear" onchange="show()"><option value="">请选择</option>
-                  <option value="2020">2020</option>
-                  <option value="2019">2019</option>
-                  <option value="2018">2018</option>
-                  <option value="2017">2017</option>
-                  <option value="2016">2016</option>
-                  <option value="2015">2015</option>
-                  <option value="2014">2014</option>
-                  <option value="2013">2013</option>
-                  <option value="2012">2012</option>
-                  <option value="2011">2011</option>
-                  <option value="2010">2010</option>
-                  <option value="2009">2009</option>
-                  <option value="2008">2008</option>
-                  <option value="2007">2007</option>
-                  <option value="2006">2006</option>
-                  <option value="2005">2005</option>
-                  <option value="2004">2004</option>
-                  <option value="2003">2003</option>
-                  <option value="2002">2002</option>
-                  <option value="2001">2001</option>
-                  <option value="2000">2000</option>
-                  <option value="1999">1999</option>
-                  <option value="1998">1998</option>
-                  <option value="1997">1997</option>
-                  <option value="1996">1996</option>
-                  <option value="1995">1995</option>
-                  <option value="1994">1994</option>
-                  <option value="1993">1993</option>
-                  <option value="1992">1992</option>
-                  <option value="1991">1991</option>
-                  <option value="1990">1990</option>
-                  <option value="1989">1989</option>
-                  <option value="1988">1988</option>
-                  <option value="1987">1987</option>
-                  <option value="1986">1986</option>
-                  <option value="1985">1985</option>
-                  <option value="1984">1984</option>
-                  <option value="1983">1983</option>
-                  <option value="1982">1982</option>
-                  <option value="1981">1981</option>
-                  <option value="1980">1980</option>
-                  <option value="1979">1979</option>
-                  <option value="1978">1978</option>
-                  <option value="1977">1977</option>
-                  <option value="1976">1976</option>
-                  <option value="1975">1975</option>
-                  <option value="1974">1974</option>
-                  <option value="1973">1973</option>
-                  <option value="1972">1972</option>
-                  <option value="1971">1971</option>
-                  <option value="1970">1970</option>
-                  <option value="1969">1969</option>
-                  <option value="1968">1968</option>
-                  <option value="1967">1967</option>
-                  <option value="1966">1966</option>
-                  <option value="1965">1965</option>
-                  <option value="1964">1964</option>
-                  <option value="1963">1963</option>
-                  <option value="1962">1962</option>
-                  <option value="1961">1961</option>
-                  <option value="1960">1960</option>
-                </select> 年
-                    <select data-val="true" data-val-required="The BirthdayMonth field is required." id="month" name="BirthdayMonth" onchange="show()"><option value="">请选择</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
-                      <option value="7">7</option>
-                      <option value="8">8</option>
-                      <option value="9">9</option>
-                      <option value="10">10</option>
-                      <option value="11">11</option>
-                      <option value="12">12</option>
-                    </select> 月
-                    <select data-val="true" data-val-required="The BirthdayDay field is required." id="day" name="BirthdayDay"><option value="">请选择</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
-                      <option value="7">7</option>
-                      <option value="8">8</option>
-                      <option value="9">9</option>
-                      <option value="10">10</option>
-                      <option value="11">11</option>
-                      <option value="12">12</option>
-                      <option value="13">13</option>
-                      <option value="14">14</option>
-                      <option value="15">15</option>
-                      <option value="16">16</option>
-                      <option value="17">17</option>
-                      <option value="18">18</option>
-                      <option value="19">19</option>
-                      <option value="20">20</option>
-                      <option value="21">21</option>
-                      <option value="22">22</option>
-                      <option value="23">23</option>
-                      <option value="24">24</option>
-                      <option value="25">25</option>
-                      <option value="26">26</option>
-                      <option value="27">27</option>
-                      <option value="28">28</option>
-                      <option value="29">29</option>
-                      <option value="30">30</option>
-                      <option value="31">31</option>
-                    </select> 日
-              </td>
-              <td class="tr_see">
-                <select id="see_name">
-                  <option value="1">任何人</option>
-                  <option value="2">仅好友</option>
-                  <option value="3">私密</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td class="tr_title">个人简介：</td>
-              <td class="tr_content">
-                <textarea name="person" id="textarea" cols="33" rows="5"></textarea>
-              </td>
-              <td class="tr_see">
-                <select id="see_name">
-                  <option value="1">任何人</option>
-                  <option value="2">仅好友</option>
-                  <option value="3">私密</option>
-                </select>
+                <textarea name="person" id="textarea" cols="33" rows="5" v-model="baseUserInfo.profile"></textarea>
               </td>
             </tr>
           </tbody>
         </table>
         <div class="save_btn">
-          <button class="save"><a href="">保存</a></button>
+          <button class="save" @click="save">保存</button>
         </div>
       </div>
-    </div>
-    <!-- 底部友情链接 -->
-    <div class="footer">
-      <a href="">关于</a>
-      <a href="">联系</a>
-      <a href="">广告</a>
-      @2020-2020
-      <a href="">博客园</a>
     </div>
 
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+import store from "@/store/index.js";
+import { mapMutations } from "vuex";
+import { mapState } from "vuex";
 export default {
- 
+  data(){
+    return{
+      baseUserInfo:{
+        user_name:"",
+        nick_name:"",
+        gender:"F",
+        mail:"",
+        phone:"",
+        birthday:"",
+        profile:"",
+      },
+      img:'',
+      fileList: [],
+      headers:{
+        token:''
+      },
+    }
+  },
+ async created(){
+   this.headers.token = localStorage.getItem('token')
+   //获取用户数据
+   await this.getUserInfo()
+   await this.getAvatar()
+   console.log(this.img)
+ },
+ methods:{
+   newAvatar(res, file){
+      this.imageUrl = URL.createObjectURL(file.raw);
+   },
+   //获取用户数据
+   async getUserInfo(){
+     let res = await axios({
+     url:'http://gdut-hqcc.cn:8887/my_data/exhibition',
+     method:"get",
+   })
+   this.baseUserInfo = res.data.data
+   },
+   //获取用户头像
+   async getAvatar(){
+    let img = await axios({
+     url:'http://gdut-hqcc.cn:8887/picture/avatar/get?user_name='+this.baseUserInfo.user_name,
+     method:"get"
+   })
+   let data =img.data 
+   this.img = "http://"+data+"?time="+new Date()
+   console.log(this.img)
+   },
+   save(){
+      axios({
+        url:"http://gdut-hqcc.cn:8887/my_data/alteration",
+        method:"put",
+        data: this.baseUserInfo
+      }).then((res)=>{
+        if(res.status == 200){ //状态码200的时候,弹窗提示
+          this.$alert('用户信息修改成功', '标题名称', {
+            confirmButtonText: '确定'
+        });
+        }
+      })
+   },
+   loginout(){//注销按钮
+       store.commit("storeLoginout")
+          this.$alert('注销成功', '标题名称', {
+            confirmButtonText: '确定'
+        });
+        this.$router.push('/login')
+   },
+   uploadImg(e){//上传头像接口
+    e.preventDefault()
+    let avatar = document.getElementById('avatar')
+    console.log(avatar)
+    avatar.click()
+    this.getAvatar()
+   },
+   selectImg(){
+
+   },
+   change(file,fileList){
+
+   },
+   uploadAvatar(e){
+
+   },
+    refreshPassword(e){
+     e.preventDefault()
+     this.$prompt('请输入密码', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(async ( {value} ) => {
+          let data = { password :value }
+          console.log(data)
+          let res = await axios({
+            url:'http://gdut-hqcc.cn:8887/my_data/pwdAlteration',
+            method:'PATCH',
+            data:data
+            })
+           store.commit("storeLoginout")
+         this.$message({
+          message: '密码重置成功，请重新登录',
+          type: 'success'
+        });
+        this.$router.push('/login')
+        }).catch((res)=>{this.$message.error('密码修改失败请稍后重试');})
+   }
+ }
 }
 
    
@@ -372,6 +325,7 @@ export default {
   font-size: 15px;
   border: 1px solid;
   background-color: #0099FF;
+  cursor: pointer;
 }
 .save a{
   text-decoration: none;

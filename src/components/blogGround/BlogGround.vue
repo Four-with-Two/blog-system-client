@@ -12,9 +12,9 @@
           >查看博客</el-button
         >
       </div>
-      <div class="text item">{{ item.name }}</div>
       <div class="text item">{{ item.summary }}</div>
-      <div class="text item">{{ item.author }}</div>
+      <div class="name">{{ item.name }}</div>
+      <div class="date">{{ item.publish_date }}</div>
     </el-card>
   </div>
 </template>
@@ -43,6 +43,18 @@ export default {
 </script>
 
 <style scoped>
+.name{
+  color: #0053ad;
+  float: left;
+  margin-right: 10px;
+}
+.date{
+  color: #bdbdbd;
+}
+.clearfix{
+  color:#005da6;
+  font-size: 18px;
+}
 .text {
   font-size: 14px;
 }

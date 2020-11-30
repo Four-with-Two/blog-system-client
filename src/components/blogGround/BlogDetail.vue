@@ -17,7 +17,7 @@
           <!-- <img :src="blogDetailContent.avatar_url" alt="" class="avatar"/> -->
           <div>
             <el-avatar
-              :src="blogDetailContent.avatar_url"
+              :src="'http://'+blogDetailContent.avatar_url"
               @click="toUserInfo"
               :id="blogDetailContent.author"
             ></el-avatar>
@@ -35,10 +35,9 @@
       <div class="text item">
         {{ blogDetailContent.content }}
       </div>
-      <div class="text item">
-        {{ blogDetailContent.publish_date }}
+      <div class="date">
+        {{ blogDetailContent.update_date }}
       </div>
-      <div class="text item"></div>
     </el-card>
   </div>
 </template>
@@ -68,6 +67,7 @@ export default {
         path: "/index/userInfo",
         query: {
           id: e.currentTarget.getAttribute("id"),
+          name: this.blogDetailContent.name
         },
       });
     },
@@ -76,12 +76,13 @@ export default {
 </script>
 
 <style  scoped>
-.avatar {
-}
-.text {
-  font-size: 14px;
-}
 
+.text {
+  font-size: 17px;
+}
+.date{
+  color: #bdbdbd;
+}
 .item {
   margin-bottom: 18px;
 }

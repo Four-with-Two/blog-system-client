@@ -1,5 +1,5 @@
 <template>
-  <div class="register">
+  <div class="register" style="min-width:1350px,min-heigth:500px">
     <div class="head">
       <div class="left">
         <a href="http://localhost:8080/#/index/blogGround"
@@ -39,9 +39,9 @@ export default {
   data(){
     return{
       register_form: {
-        username: "123",
-        mail:"456",
-        password: "23",
+        username: "",
+        mail:"",
+        password: "",
       },
     }
   },
@@ -60,21 +60,16 @@ export default {
       }).then((res)=>{
         this.registerform=res.data.registerform;
         console.log(res);
-        alert(res.code);
+        alert(res.message);
       })
       
 
     },
  
-   websocketsend(agentData){//数据发送
-        this.url="http://gdut-hqcc.cn:8887/user/register";
-        this.websock.send(agentData);
-   },
+  
   },
   watch:{
-    // register_form:function{
-
-    // }
+    
   }
 
 };
@@ -109,7 +104,7 @@ export default {
 .box {
   background-color: azure;
   width: 30%;
-  height: 40%;
+  height: 370px;
   top: 20%;
   margin: auto;
   position: relative;
@@ -126,8 +121,8 @@ export default {
   border-radius: 3px;
   padding: 13px 14px;
   width: 80%;
+  height: 20%;
   font-size: 18px;
-  font-weight: 300;
   margin-left: 7.5%;
   margin-top: 5%;
 }

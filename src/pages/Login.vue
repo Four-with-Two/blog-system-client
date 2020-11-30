@@ -62,10 +62,8 @@
 <script>
 import axios from "axios";
 import store from "@/store/index.js";
-console.log(store);
 import { mapMutations } from "vuex";
 import { mapState } from "vuex";
-console.log(mapMutations);
 export default {
   name: "userLogin",
   data() {
@@ -102,12 +100,8 @@ export default {
       })
       .then((res)=>{
         if(res.data.code=='6666'){
-          console.log(res.data);
-          console.log("获取验证码信息成功"+res.data.message);
           this.imgCode=res.data.data.url;
-          console.log(this.imgCode);
           this.imgCode='http://'+this.imgCode;
-          console.log(this.imgCode);
           this.imgUUID=res.data.data.uuid;
         }else{
           console.log("获取验证码信息失败"+res.data.message);
@@ -149,14 +143,8 @@ export default {
                 //status不存在，说明返回的是token，直接存下来
                 console.log("登录失败");
               } else {
-                console.log(res.data)
                 let token = "Bearer " + res.data;
-                console.log(token);
-                // this.storeLogin({ Authorization: token });
                 store.commit("storeLogin", { Authorization: token, token: res.data });
-                // store.commit("storeLogin", { token: res.data });
-                console.log(store.state.Authorization);
-                console.log(store.state.token);
                 this.$router.push("/");
               }
             });

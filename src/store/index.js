@@ -14,6 +14,12 @@ const store = new Vuex.Store({
             localStorage.setItem('Authorization',user.Authorization)
             state.token = user.token
             localStorage.setItem('token',user.token)
+    },
+    storeLoginout(state){
+        state.Authorization = null
+        localStorage.setItem('Authorization',null)
+        state.token = null
+        localStorage.setItem('token',null)
     }
 }});
 export default store
